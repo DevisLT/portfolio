@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Admin — MND Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--sky:#38bdf8;--blue:#2563eb;--green:#10b981;--red:#f43f5e;--gold:#f59e0b;--grad:linear-gradient(135deg,#38bdf8,#2563eb);--ff-h:'Syne',sans-serif;--ff-b:'Outfit',sans-serif;--ease:cubic-bezier(.4,0,.2,1)}
+[data-theme="dark"]{--bg:#020917;--bg2:#050f1f;--bg3:#071428;--surf:rgba(255,255,255,0.04);--surf-h:rgba(255,255,255,0.07);--bdr:rgba(56,189,248,0.12);--bdr-h:rgba(56,189,248,0.35);--txt:#f0f8ff;--muted:rgba(240,248,255,0.52);--dim:rgba(240,248,255,0.28);--sh:0 4px 20px rgba(0,0,0,0.5);--inp:rgba(255,255,255,0.04)}
+[data-theme="light"]{--bg:#f4f8ff;--bg2:#fff;--bg3:#eaf2ff;--surf:#fff;--surf-h:#f8fbff;--bdr:rgba(37,99,235,0.14);--bdr-h:rgba(14,165,233,0.55);--txt:#0d1f3c;--muted:#4a6080;--dim:#8ba4c0;--sh:0 4px 20px rgba(37,99,235,0.1);--inp:#fff}
+html{scroll-behavior:smooth}
+body{font-family:var(--ff-b);background:var(--bg);color:var(--txt);min-height:100vh;transition:background .3s,color .3s}
+
+/* LOGIN */
+#ls{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:20px}
+#ls.h{display:none}
+.lc{background:var(--surf);border:1px solid var(--bdr);border-radius:24px;padding:44px 40px;width:100%;max-width:400px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.5)}
+.ll{font-family:var(--ff-h);font-size:28px;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px}
+.ls2{color:var(--muted);font-size:13px;margin-bottom:30px}
+.lc input{width:100%;background:var(--inp);border:1px solid var(--bdr);border-radius:10px;padding:13px 16px;color:var(--txt);font-family:var(--ff-b);font-size:14px;outline:none;transition:border-color .25s;margin-bottom:11px}
+.lc input:focus{border-color:var(--sky)}
+.lc input::placeholder{color:var(--dim)}
+.lbtn{width:100%;background:var(--grad);color:#fff;border:none;border-radius:10px;padding:13px;font-family:var(--ff-b);font-size:14px;font-weight:700;cursor:pointer;margin-bottom:10px;transition:opacity .2s}
+.lbtn:hover{opacity:.88}
+.lerr{color:var(--red);font-size:12px;height:18px;margin-bottom:8px}
+.lbk{color:var(--muted);font-size:12px;cursor:pointer;text-decoration:underline}
+.lbk:hover{color:var(--sky)}
+
+/* LAYOUT */
+.layout{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
+.sb{background:var(--bg2);border-right:1px solid var(--bdr);position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column}
+.sb-top{padding:26px 22px 18px;border-bottom:1px solid var(--bdr)}
+.sb-logo{font-family:var(--ff-h);font-size:20px;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.sb-sub{font-size:11px;color:var(--dim);margin-top:2px}
+.sb-nav{padding:14px 10px;flex:1}
+.sbg{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.15em;color:var(--dim);padding:0 10px;margin:14px 0 5px}
+.sbl{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;cursor:pointer;transition:all .22s;color:var(--muted);font-size:13.5px;font-weight:500;margin-bottom:2px;text-decoration:none}
+.sbl:hover{background:var(--surf-h);color:var(--txt)}
+.sbl.active{background:rgba(56,189,248,0.1);color:var(--sky);border:1px solid rgba(56,189,248,0.15)}
+[data-theme="light"] .sbl.active{background:rgba(37,99,235,0.07);color:var(--blue);border-color:rgba(37,99,235,0.18)}
+.sbi{width:22px;text-align:center;font-size:15px}
+.sb-bot{padding:14px 10px;border-top:1px solid var(--bdr)}
+.sb-user{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;background:var(--surf)}
+.sb-av{width:36px;height:36px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;font-family:var(--ff-h);font-size:13px;font-weight:800;color:#fff;flex-shrink:0;overflow:hidden}
+.sb-av img{width:100%;height:100%;object-fit:cover}
+.sb-un{font-size:13px;font-weight:600}
+.sb-ur{font-size:11px;color:var(--dim)}
+.sb-sync{display:inline-flex;align-items:center;gap:5px;font-size:10px;padding:3px 10px;border-radius:8px;margin-top:4px;font-weight:700}
+.sy-live{background:rgba(16,185,129,.12);color:#10b981;border:1px solid rgba(16,185,129,.2)}
+
+/* MAIN */
+.mn{padding:36px 40px;overflow-y:auto}
+.ph{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:28px;gap:16px;flex-wrap:wrap}
+.pt{font-family:var(--ff-h);font-size:26px;font-weight:800;letter-spacing:-.02em}
+.ps{font-size:13px;color:var(--muted);margin-top:4px}
+.ha{display:flex;gap:10px;align-items:center}
+.panel{display:none}
+.panel.active{display:block}
+
+/* CARDS */
+.card{background:var(--surf);border:1px solid var(--bdr);border-radius:16px;padding:24px;margin-bottom:18px;transition:border-color .25s}
+[data-theme="light"] .card{box-shadow:0 2px 8px rgba(37,99,235,0.06)}
+
+/* FORMS */
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-bottom:15px}
+.fgrid.full{grid-template-columns:1fr}
+.fg{display:flex;flex-direction:column;gap:6px}
+.fg label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--dim)}
+.fg input,.fg select,.fg textarea{background:var(--inp);border:1px solid var(--bdr);border-radius:9px;padding:11px 14px;color:var(--txt);font-family:var(--ff-b);font-size:13.5px;outline:none;transition:border-color .25s;resize:none}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--sky);box-shadow:0 0 0 3px rgba(56,189,248,.1)}
+.fg input::placeholder,.fg textarea::placeholder{color:var(--dim)}
+.fg select option{background:var(--bg2)}
+.fg textarea{min-height:88px}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:9px;font-family:var(--ff-b);font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .22s}
+.bp{background:var(--grad);color:#fff;box-shadow:0 4px 16px rgba(37,99,235,.22)}
+.bp:hover{transform:translateY(-1px);box-shadow:0 6px 22px rgba(37,99,235,.35)}
+.bsu{background:linear-gradient(135deg,#10b981,#059669);color:#fff}
+.bd{background:linear-gradient(135deg,#f43f5e,#e11d48);color:#fff}
+.bg2{background:var(--surf-h);color:var(--muted);border:1px solid var(--bdr)}
+.bg2:hover{border-color:var(--sky);color:var(--sky)}
+.bsm{padding:6px 13px;font-size:12px;border-radius:7px}
+
+/* LIST ITEMS */
+.li{background:var(--bg2);border:1px solid var(--bdr);border-radius:12px;padding:17px 19px;margin-bottom:11px;transition:border-color .22s}
+.li:hover{border-color:var(--bdr-h)}
+.lih{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
+.li-i h4{font-size:15px;font-weight:600;margin-bottom:3px}
+.li-i p{font-size:12px;color:var(--muted)}
+.lia{display:flex;gap:7px;flex-shrink:0;align-items:center}
+.ez{display:none;margin-top:16px;padding-top:16px;border-top:1px solid var(--bdr)}
+.ez.open{display:block}
+.badge{padding:3px 11px;border-radius:10px;font-size:10px;font-weight:700;letter-spacing:.05em;display:inline-flex;align-items:center;gap:5px}
+.b-done{background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.2);color:#34d399}
+.b-prog{background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.2);color:#fbbf24}
+.b-plan{background:rgba(148,163,184,.08);border:1px solid rgba(148,163,184,.12);color:#94a3b8}
+.b-gold{background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.2);color:#fbbf24}
+
+/* STATS */
+.sg{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:24px}
+.sb2{background:var(--surf);border:1px solid var(--bdr);border-radius:13px;padding:18px;text-align:center}
+.sn{font-family:var(--ff-h);font-size:26px;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.sl{font-size:11px;color:var(--muted);margin-top:3px;text-transform:uppercase;letter-spacing:.08em;font-weight:600}
+
+/* TOAST */
+.toast{position:fixed;bottom:22px;right:22px;z-index:9000;background:var(--bg2);border:1px solid var(--bdr-h);border-radius:12px;padding:13px 18px;font-size:13.5px;font-weight:500;box-shadow:0 8px 30px rgba(0,0,0,0.4);transform:translateY(80px);opacity:0;transition:all .3s var(--ease);display:flex;align-items:center;gap:10px;max-width:320px}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.ts{border-color:rgba(16,185,129,.35);color:#34d399}
+.toast.te{border-color:rgba(244,63,94,.35);color:#fb7185}
+
+/* TOGGLE */
+.tw{display:flex;align-items:center;gap:10px}
+.tog{position:relative;width:44px;height:24px;cursor:pointer}
+.tog input{opacity:0;width:0;height:0;position:absolute}
+.tog-track{position:absolute;inset:0;background:var(--bdr);border-radius:12px;transition:background .3s}
+.tog input:checked+.tog-track{background:var(--sky)}
+.tog-thumb{position:absolute;left:3px;top:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:transform .3s;box-shadow:0 1px 4px rgba(0,0,0,.3)}
+.tog input:checked~.tog-thumb{transform:translateX(20px)}
+.tog-lbl{font-size:13px;color:var(--muted)}
+
+/* PROFILE PICTURE — PROFESSIONAL UPLOAD */
+.av-section{display:flex;gap:36px;align-items:flex-start;flex-wrap:wrap}
+.av-preview-wrap{position:relative;flex-shrink:0}
+.av-preview-frame{width:160px;height:160px;border-radius:50%;position:relative;cursor:pointer}
+/* Spinning gradient ring */
+.av-preview-frame::before{content:'';position:absolute;inset:-4px;border-radius:50%;background:conic-gradient(from 0deg,transparent 40%,var(--sky) 65%,var(--blue) 80%,transparent 100%);animation:avSpin 8s linear infinite;z-index:0}
+.av-preview-frame::after{content:'';position:absolute;inset:-1px;border-radius:50%;background:var(--bg);z-index:1}
+@keyframes avSpin{to{transform:rotate(360deg)}}
+.av-circle{position:relative;z-index:2;width:160px;height:160px;border-radius:50%;overflow:hidden;border:2px solid var(--bdr);background:linear-gradient(135deg,var(--bg3),var(--bg2));display:flex;align-items:center;justify-content:center;font-family:var(--ff-h);font-size:48px;font-weight:800;color:var(--sky)}
+.av-circle img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block}
+.av-overlay{position:absolute;inset:0;border-radius:50%;background:rgba(0,0,0,0.55);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;opacity:0;transition:opacity .25s;z-index:3;cursor:pointer}
+.av-preview-frame:hover .av-overlay{opacity:1}
+.av-overlay span:first-child{font-size:22px}
+.av-overlay span:last-child{font-size:11px;color:#fff;font-weight:700}
+.av-info{flex:1;min-width:220px}
+.av-info h3{font-family:var(--ff-h);font-size:18px;font-weight:700;margin-bottom:8px}
+.av-info p{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:14px}
+.av-tips{background:var(--bg3);border:1px solid var(--bdr);border-radius:10px;padding:14px 16px;font-size:12px;color:var(--muted);line-height:1.7}
+.av-tips strong{color:var(--txt);font-weight:600}
+.av-actions{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+.av-remove{display:none}
+
+/* IMAGE UPLOADER (projects / certs) */
+.img-upload-zone{border:2px dashed var(--bdr);border-radius:12px;padding:20px;text-align:center;cursor:pointer;transition:all .25s;position:relative;overflow:hidden;background:var(--bg3)}
+.img-upload-zone:hover{border-color:var(--sky);background:rgba(56,189,248,.04)}
+.img-upload-zone.has-img{border-style:solid;border-color:var(--sky);padding:0}
+.img-preview{width:100%;height:160px;object-fit:cover;object-position:top center;border-radius:10px;display:block}
+.img-upload-txt{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px}
+.img-upload-txt span:first-child{font-size:28px}
+.img-upload-txt span:last-child{font-size:12px;color:var(--dim);font-weight:600}
+.img-edit-row{display:flex;gap:8px;padding:10px;justify-content:center;border-top:1px solid var(--bdr);background:var(--surf)}
+
+/* MOBILE */
+@media(max-width:900px){
+  .layout{grid-template-columns:1fr}
+  .sb{position:fixed;top:0;left:-280px;z-index:500;height:100vh;transition:left .3s;width:260px}
+  .sb.open{left:0}
+  .mtb{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:var(--bg2);border-bottom:1px solid var(--bdr);position:sticky;top:0;z-index:100}
+  .mn{padding:18px 14px}
+  .sg{grid-template-columns:1fr 1fr}
+  .fgrid{grid-template-columns:1fr}
+}
+@media(min-width:901px){.mtb{display:none}}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:rgba(56,189,248,.22);border-radius:3px}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="ls">
+  <div class="lc">
+    <div class="ll">MND Admin</div>
+    <div class="ls2">Portfolio Management Dashboard</div>
+    <div class="lerr" id="lerr"></div>
+    <input type="text" id="lu" placeholder="Username" autocomplete="username"/>
+    <input type="password" id="lp" placeholder="Password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"/>
+    <button class="lbtn" onclick="doLogin()">Sign In →</button>
+    <div class="lbk" onclick="window.location='../index.html'">← Back to portfolio</div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="layout" id="app" style="display:none">
+  <!-- SIDEBAR -->
+  <aside class="sb" id="sidebar">
+    <div class="sb-top">
+      <div class="sb-logo">MND.</div>
+      <div class="sb-sub">⚙ Admin Panel</div>
+    </div>
+    <nav class="sb-nav">
+      <div class="sbg">Main</div>
+      <div class="sbl active" onclick="nav('overview')" id="nav-overview"><span class="sbi">📊</span>Overview</div>
+      <div class="sbg">Content</div>
+      <div class="sbl" onclick="nav('owner')" id="nav-owner"><span class="sbi">👤</span>Profile & Info</div>
+      <div class="sbl" onclick="nav('projects')" id="nav-projects"><span class="sbi">🚀</span>Projects</div>
+      <div class="sbl" onclick="nav('jobs')" id="nav-jobs"><span class="sbi">💼</span>Experience</div>
+      <div class="sbl" onclick="nav('certs')" id="nav-certs"><span class="sbi">🏅</span>Certificates</div>
+      <div class="sbg">System</div>
+      <div class="sbl" onclick="nav('settings')" id="nav-settings"><span class="sbi">⚙️</span>Settings</div>
+    </nav>
+    <div class="sb-bot">
+      <div class="sb-user">
+        <div class="sb-av" id="sb-avatar-wrap"><span>MD</span></div>
+        <div>
+          <div class="sb-un">Muhozi Ntwali</div>
+          <div class="sb-ur">Portfolio Owner</div>
+          <span class="sb-sync sy-live">● Live Sync On</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="mn">
+    <div class="mtb">
+      <button onclick="toggleSb()" style="background:transparent;border:none;color:var(--txt);font-size:22px;cursor:pointer">☰</button>
+      <span style="font-family:var(--ff-h);font-weight:800;font-size:17px;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent">MND Admin</span>
+      <button onclick="doLogout()" style="background:transparent;border:none;color:var(--muted);font-size:13px;cursor:pointer">Sign out</button>
+    </div>
+
+    <!-- OVERVIEW -->
+    <div class="panel active" id="panel-overview">
+      <div class="ph">
+        <div><div class="pt">Dashboard</div><div class="ps">Welcome back! Changes save &amp; sync to portfolio instantly.</div></div>
+        <div class="ha">
+          <button class="btn bg2 bsm" onclick="toggleTheme()">🌙 Theme</button>
+          <a href="../index.html" target="_blank" class="btn bp bsm">↗ View Live</a>
+          <button class="btn bg2 bsm" onclick="doLogout()">Sign Out</button>
+        </div>
+      </div>
+      <div class="sg" id="ov-stats"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px">
+        <div class="card">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--sky);margin-bottom:13px">Projects</div>
+          <div id="ov-projs"></div>
+        </div>
+        <div class="card">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--sky);margin-bottom:13px">Quick Actions</div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <button class="btn bg2" style="justify-content:flex-start;width:100%" onclick="nav('owner')">👤 Edit profile &amp; photo</button>
+            <button class="btn bg2" style="justify-content:flex-start;width:100%" onclick="nav('projects')">🚀 Manage projects</button>
+            <button class="btn bg2" style="justify-content:flex-start;width:100%" onclick="nav('certs')">🏅 Manage certificates</button>
+            <a href="../index.html" target="_blank" class="btn bg2" style="justify-content:flex-start;width:100%;text-decoration:none">↗ Preview portfolio</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROFILE -->
+    <div class="panel" id="panel-owner">
+      <div class="ph">
+        <div><div class="pt">Profile & Info</div><div class="ps">Changes publish to portfolio automatically on save.</div></div>
+        <button class="btn bp" onclick="saveOwner()">💾 Save & Publish</button>
+      </div>
+
+      <!-- PROFESSIONAL AVATAR UPLOADER -->
+      <div class="card">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--sky);margin-bottom:18px">Profile Picture</div>
+        <div class="av-section">
+          <div class="av-preview-wrap">
+            <div class="av-preview-frame" onclick="document.getElementById('av-file').click()">
+              <div class="av-circle" id="av-circle">
+                <img id="av-preview-img" src="" alt="" style="display:none"/>
+                <span id="av-initials">MD</span>
+              </div>
+              <div class="av-overlay">
+                <span>📷</span><span>Change Photo</span>
+              </div>
+            </div>
+            <input type="file" id="av-file" accept="image/*" style="display:none" onchange="handleAvatarUpload(this)"/>
+          </div>
+          <div class="av-info">
+            <h3>Professional Profile Photo</h3>
+            <p>Upload a clear, professional photo of yourself. It will appear in your hero section and about section with a designed frame.</p>
+            <div class="av-tips">
+              <strong>Best practices:</strong><br/>
+              • Square photo, face centered (min 400×400px)<br/>
+              • Good lighting, clean background<br/>
+              • Professional or smart-casual attire<br/>
+              • JPG or PNG format<br/>
+              • The system will automatically frame and style your photo
+            </div>
+            <div class="av-actions">
+              <button class="btn bp bsm" onclick="document.getElementById('av-file').click()">📷 Upload Photo</button>
+              <button class="btn bd bsm av-remove" id="av-remove-btn" onclick="removeAvatar()">✕ Remove</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--sky);margin-bottom:15px">Name & Identity</div>
+        <div class="fgrid"><div class="fg"><label>Full Name</label><input id="o-name" placeholder="Full name"/></div><div class="fg"><label>First Name (shown in hero)</label><input id="o-first" placeholder="First name"/></div></div>
+        <div class="fgrid"><div class="fg"><label>Last Name</label><input id="o-last" placeholder="Last name(s)"/></div><div class="fg"><label>Job Title / Role Line</label><input id="o-title" placeholder="Software Engineer · Designer..."/></div></div>
+      </div>
+      <div class="card">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--sky);margin-bottom:15px">Contact Details</div>
+        <div class="fgrid"><div class="fg"><label>Email</label><input id="o-email" type="email"/></div><div class="fg"><label>Phone</label><input id="o-phone"/></div></div>
+        <div class="fgrid"><div class="fg"><label>Location</label><input id="o-loc"/></div><div class="fg"><label>LinkedIn URL</label><input id="o-li"/></div></div>
+        <div class="fgrid"><div class="fg"><label>GitHub URL</label><input id="o-gh"/></div>
+          <div class="fg"><label>Availability Status</label>
+            <div class="tw" style="margin-top:8px"><label class="tog"><input type="checkbox" id="o-avail" checked/><div class="tog-track"></div><div class="tog-thumb"></div></label><span class="tog-lbl">Available for opportunities</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--sky);margin-bottom:15px">Bio</div>
+        <div class="fgrid full"><div class="fg"><label>Bio Paragraph 1</label><textarea id="o-bio1"></textarea></div></div>
+        <div class="fgrid full"><div class="fg"><label>Bio Paragraph 2</label><textarea id="o-bio2"></textarea></div></div>
+      </div>
+      <div class="card">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--sky);margin-bottom:15px">Hero Stats</div>
+        <div class="fgrid"><div class="fg"><label>Projects Count</label><input id="o-sp" placeholder="5+"/></div><div class="fg"><label>Certificates Count</label><input id="o-sc" placeholder="3"/></div></div>
+        <div class="fgrid"><div class="fg"><label>Years Experience</label><input id="o-se" placeholder="3+"/></div></div>
+      </div>
+    </div>
+
+    <!-- PROJECTS -->
+    <div class="panel" id="panel-projects">
+      <div class="ph"><div><div class="pt">Projects</div><div class="ps">Add screenshots — they show on cards and in the detail modal.</div></div><button class="btn bp" onclick="addProject()">+ Add Project</button></div>
+      <div id="proj-list"></div>
+    </div>
+
+    <!-- JOBS -->
+    <div class="panel" id="panel-jobs">
+      <div class="ph"><div><div class="pt">Experience</div><div class="ps">Manage your career history.</div></div><button class="btn bp" onclick="addJob()">+ Add Experience</button></div>
+      <div id="jobs-list"></div>
+    </div>
+
+    <!-- CERTS -->
+    <div class="panel" id="panel-certs">
+      <div class="ph"><div><div class="pt">Certificates</div><div class="ps">Upload certificate images — visitors can click to view full size.</div></div><button class="btn bp" onclick="addCert()">+ Add Certificate</button></div>
+      <div id="cert-storage-info" style="margin-bottom:16px;display:none">
+        <div style="background:rgba(56,189,248,.06);border:1px solid rgba(56,189,248,.15);border-radius:10px;padding:12px 16px;display:flex;align-items:center;gap:12px;font-size:12px;color:var(--muted)">
+          <span style="font-size:18px">📁</span>
+          <div>
+            <strong style="color:var(--txt);display:block;margin-bottom:2px">Certificate images are stored in your GitHub repo</strong>
+            <span id="cert-storage-path" style="color:var(--sky);font-family:monospace;font-size:11px"></span>
+          </div>
+        </div>
+      </div>
+      <div id="certs-list"></div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="panel" id="panel-settings">
+      <div class="ph"><div><div class="pt">Settings</div><div class="ps">GitHub sync, credentials and data management.</div></div></div>
+
+      <!-- GITHUB SETUP CARD (shown when not configured) -->
+      <div class="card" id="gh-setup-card">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--sky)">🔗 GitHub Sync — Cross-Device</div>
+          <span id="gh-status-badge" class="badge b-plan">● Not Connected</span>
+        </div>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.65">Connect GitHub so every image and data change syncs to your repo automatically — visible on <strong style="color:var(--txt)">all devices &amp; browsers</strong>.</p>
+        <div style="background:var(--bg3);border:1px solid var(--bdr);border-radius:10px;padding:15px 17px;margin-bottom:16px;font-size:12px;color:var(--muted);line-height:1.9">
+          <strong style="color:var(--txt)">Quick setup (2 minutes):</strong><br/>
+          1. Go to <a href="https://github.com/settings/tokens" target="_blank" style="color:var(--sky);text-decoration:none">github.com/settings/tokens</a> → Generate new token (classic)<br/>
+          2. Name it <em>Portfolio Sync</em>, check ✅ <strong style="color:var(--txt)">repo</strong>, click Generate<br/>
+          3. Copy the token (starts with <code style="background:var(--bg2);padding:1px 6px;border-radius:4px">ghp_</code>) and paste below<br/>
+          4. Your repo name is the last part of your GitHub URL
+        </div>
+        <div class="fgrid">
+          <div class="fg"><label>GitHub Username</label><input id="gh-owner" placeholder="e.g. DevisLT"/></div>
+          <div class="fg"><label>Repository Name</label><input id="gh-repo" placeholder="e.g. portfolio"/></div>
+        </div>
+        <div class="fgrid">
+          <div class="fg"><label>Branch</label><input id="gh-branch" value="main" placeholder="main"/></div>
+          <div class="fg"><label>Personal Access Token</label><input type="password" id="gh-token" placeholder="ghp_xxxxxxxxxxxx"/></div>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px">
+          <button class="btn bsu" onclick="saveGHConfig()">🔗 Connect GitHub</button>
+          <button class="btn bg2" onclick="testGHConfig()">🧪 Test Connection</button>
+        </div>
+        <div id="gh-test-result" style="margin-top:12px;font-size:13px;padding:10px 14px;border-radius:8px;display:none"></div>
+      </div>
+
+      <!-- GITHUB CONNECTED CARD (shown when configured) -->
+      <div class="card" id="gh-connected-card" style="display:none;border-color:rgba(16,185,129,.2)">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--green)">✅ GitHub Sync Active</div>
+          <span class="badge b-done">● Connected</span>
+        </div>
+        <div id="gh-connected-info" style="font-size:13px;color:var(--muted);margin-bottom:14px"></div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn bsu" onclick="forcePushAll()">⬆ Push All Data to GitHub Now</button>
+          <button class="btn bg2" onclick="showGHSetup()">🔧 Reconfigure</button>
+          <button class="btn bd bsm" onclick="disconnectGH()">✕ Disconnect</button>
+        </div>
+        <div id="push-result" style="margin-top:12px;font-size:13px;padding:10px 14px;border-radius:8px;display:none"></div>
+      </div>
+
+      <div class="card">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--sky);margin-bottom:15px">Change Admin Credentials</div>
+        <div class="fgrid"><div class="fg"><label>New Username</label><input id="nu" placeholder="Username"/></div><div class="fg"><label>New Password</label><input type="password" id="np" placeholder="New password"/></div></div>
+        <button class="btn bsu" onclick="changeCreds()">💾 Update Credentials</button>
+      </div>
+      <div class="card" style="border-color:rgba(244,63,94,.2)">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--red);margin-bottom:10px">Danger Zone</div>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:15px">Reset all portfolio data to original defaults. Cannot be undone.</p>
+        <button class="btn bd" onclick="confirmReset()">🗑 Reset All Data</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="../js/data.js"></script>
+<script src="../js/github-sync.js"></script>
+<script>
+let D = loadData();
+let CREDS = JSON.parse(localStorage.getItem('admin_creds')||'{"user":"muhozi","pass":"admin2024"}');
+
+// ── AUTH ──
+function doLogin(){
+  const u=document.getElementById('lu').value.trim(), p=document.getElementById('lp').value;
+  if(u===CREDS.user&&p===CREDS.pass){
+    document.getElementById('ls').classList.add('h');
+    document.getElementById('app').style.display='grid';
+    loadOwner(); renderOverview(); renderProjects(); renderJobs(); renderCerts();
+    updateSbAvatar(); refreshGHStatus();
+  } else {
+    document.getElementById('lerr').textContent='❌ Incorrect credentials';
+    document.getElementById('lp').value='';
+    setTimeout(()=>document.getElementById('lerr').textContent='',3000);
+  }
+}
+document.getElementById('lp').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()});
+function doLogout(){ document.getElementById('ls').classList.remove('h'); document.getElementById('app').style.display='none'; document.getElementById('lu').value=''; document.getElementById('lp').value=''; }
+function changeCreds(){ const u=document.getElementById('nu').value.trim(), p=document.getElementById('np').value; if(!u||!p){toast('Fill both fields','e');return;} CREDS={user:u,pass:p}; localStorage.setItem('admin_creds',JSON.stringify(CREDS)); toast('Credentials updated — sign in again'); setTimeout(()=>doLogout(),1500); }
+
+// ── NAV ──
+function nav(id){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.sbl').forEach(l=>l.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  document.getElementById('nav-'+id).classList.add('active');
+  if(id==='owner') loadOwner();
+  if(id==='certs') showCertStorageInfo();
+  if(id==='projects') showProjStorageInfo();
+  closeSb();
+}
+function toggleSb(){ document.getElementById('sidebar').classList.toggle('open'); }
+function closeSb(){ document.getElementById('sidebar').classList.remove('open'); }
+
+// ── THEME ──
+let dark=true;
+function toggleTheme(){ dark=!dark; document.documentElement.setAttribute('data-theme',dark?'dark':'light'); }
+
+// ── TOAST ──
+function toast(msg,t='s'){
+  const el=document.getElementById('toast');
+  el.textContent=(t==='s'?'✅ ':'❌ ')+msg;
+  el.className='toast t'+(t==='s'?'s':'e')+' show';
+  setTimeout(()=>el.classList.remove('show'),3000);
+}
+
+// ── SAVE & BROADCAST (localStorage + GitHub) ──
+async function publish(msg){
+  saveData(D);
+  updateSbAvatar();
+  toast(msg||'Saving...');
+  if(GH.isConfigured()){
+    try {
+      await GH.saveData(D);
+      toast((msg||'Changes')+' — synced to GitHub ✓');
+    } catch(e) {
+      toast('Saved locally. GitHub sync failed: '+e.message,'e');
+    }
+  } else {
+    toast((msg||'Changes saved!')+' (local only — connect GitHub to sync everywhere)');
+  }
+}
+
+// ── SIDEBAR AVATAR ──
+function updateSbAvatar(){
+  const wrap = document.getElementById('sb-avatar-wrap');
+  const src = D.owner.avatar || '../assets/devis pro.png';
+  wrap.innerHTML=`<img src="${src}" style="width:100%;height:100%;object-fit:cover;border-radius:50%"/>`;
+}
+
+// ── AVATAR UPLOAD ──
+async function handleAvatarUpload(inp){
+  if(!inp.files||!inp.files[0]) return;
+  const file=inp.files[0];
+  toast('Uploading photo...');
+  const dataURL = await readFileAsDataURL(file);
+  let finalSrc = dataURL; // fallback: store as base64
+  if(GH.isConfigured()){
+    try {
+      const ts = Date.now();
+      const ext = file.name.split('.').pop() || 'jpg';
+      finalSrc = await GH.uploadAvatarImage('avatar_'+ts+'.'+ext, dataURL);
+      const path = GH.getStoragePath('avatar');
+      toast('Photo saved → assets/uploaded/avatars/ ✓');
+    } catch(e){
+      toast('GitHub upload failed, storing locally: '+e.message,'e');
+      finalSrc = dataURL;
+    }
+  }
+  D.owner.avatar = finalSrc;
+  const img = document.getElementById('av-preview-img');
+  img.src = finalSrc; img.style.display='block';
+  document.getElementById('av-initials').style.display='none';
+  document.getElementById('av-remove-btn').style.display='inline-flex';
+  await publish('Profile photo updated!');
+}
+function removeAvatar(){
+  D.owner.avatar=null;
+  const img=document.getElementById('av-preview-img');
+  img.src='../assets/devis pro.png'; img.style.display='block';
+  document.getElementById('av-initials').style.display='none';
+  document.getElementById('av-remove-btn').style.display='none';
+  publish('Profile photo removed — reset to default');
+}
+
+// ── OWNER FORM ──
+function loadOwner(){
+  const o=D.owner;
+  document.getElementById('o-name').value=o.name||'';
+  document.getElementById('o-first').value=o.firstName||'';
+  document.getElementById('o-last').value=o.lastName||'';
+  document.getElementById('o-title').value=o.title||'';
+  document.getElementById('o-email').value=o.email||'';
+  document.getElementById('o-phone').value=o.phone||'';
+  document.getElementById('o-loc').value=o.location||'';
+  document.getElementById('o-li').value=o.linkedin||'';
+  document.getElementById('o-gh').value=o.github||'';
+  document.getElementById('o-bio1').value=o.bio1||'';
+  document.getElementById('o-bio2').value=o.bio2||'';
+  document.getElementById('o-avail').checked=o.available!==false;
+  document.getElementById('o-sp').value=o.stats?.projects||'5+';
+  document.getElementById('o-sc').value=o.stats?.certs||'3';
+  document.getElementById('o-se').value=o.stats?.exp||'3+';
+  // Avatar preview
+  const img=document.getElementById('av-preview-img');
+  const initials=document.getElementById('av-initials');
+  const defaultAvatar = '../assets/devis pro.png';
+  if(o.avatar){
+    img.src=o.avatar; img.style.display='block'; initials.style.display='none';
+    document.getElementById('av-remove-btn').style.display='inline-flex';
+  } else {
+    // Show default devis pro.png but don't show remove button (it's the default)
+    img.src=defaultAvatar; img.style.display='block'; initials.style.display='none';
+    document.getElementById('av-remove-btn').style.display='none';
+  }
+}
+function saveOwner(){
+  D.owner.name=document.getElementById('o-name').value;
+  D.owner.firstName=document.getElementById('o-first').value;
+  D.owner.lastName=document.getElementById('o-last').value;
+  D.owner.title=document.getElementById('o-title').value;
+  D.owner.email=document.getElementById('o-email').value;
+  D.owner.phone=document.getElementById('o-phone').value;
+  D.owner.location=document.getElementById('o-loc').value;
+  D.owner.linkedin=document.getElementById('o-li').value;
+  D.owner.github=document.getElementById('o-gh').value;
+  D.owner.bio1=document.getElementById('o-bio1').value;
+  D.owner.bio2=document.getElementById('o-bio2').value;
+  D.owner.available=document.getElementById('o-avail').checked;
+  D.owner.stats={projects:document.getElementById('o-sp').value,certs:document.getElementById('o-sc').value,exp:document.getElementById('o-se').value};
+  publish('Profile saved & published!'); renderOverview();
+}
+
+// ── OVERVIEW ──
+function renderOverview(){
+  const done=D.projects.filter(p=>p.status==='done').length;
+  document.getElementById('ov-stats').innerHTML=`
+    <div class="sb2"><div class="sn">${D.projects.length}</div><div class="sl">Projects</div></div>
+    <div class="sb2"><div class="sn">${done}</div><div class="sl">Complete</div></div>
+    <div class="sb2"><div class="sn">${D.jobs.length}</div><div class="sl">Jobs</div></div>
+    <div class="sb2"><div class="sn">${D.certs.length}</div><div class="sl">Certs</div></div>`;
+  document.getElementById('ov-projs').innerHTML=D.projects.slice(0,5).map(p=>{
+    const bc=p.status==='done'?'b-done':p.status==='progress'?'b-prog':'b-plan';
+    return `<div style="display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--bdr)">
+      <div style="display:flex;align-items:center;gap:9px">
+        ${p.image?`<img src="${p.image}" style="width:28px;height:28px;border-radius:6px;object-fit:cover;flex-shrink:0"/>`:`<span style="font-size:18px">${p.icon}</span>`}
+        <span style="font-size:13px;font-weight:500">${p.name}</span>
+      </div>
+      <span class="badge ${bc}">${p.status==='done'?'Done':p.status==='progress'?'In Progress':'Planned'}</span></div>`;
+  }).join('');
+}
+
+// ── PROJECTS ──
+function renderProjects(){
+  const el=document.getElementById('proj-list');
+  if(!D.projects.length){el.innerHTML='<div style="text-align:center;padding:40px;color:var(--dim)">No projects yet.</div>';return;}
+  el.innerHTML=D.projects.map(p=>{
+    const bc=p.status==='done'?'b-done':p.status==='progress'?'b-prog':'b-plan';
+    const bl=p.status==='done'?'✓ Complete':p.status==='progress'?'⟳ In Progress':'◯ Planned';
+    const imgThumb=p.image?`<img src="${p.image}" style="width:44px;height:44px;border-radius:8px;object-fit:cover;flex-shrink:0"/>`:`<span style="font-size:24px">${p.icon}</span>`;
+    return `<div class="li" id="pli-${p.id}">
+      <div class="lih">
+        <div class="li-i" style="display:flex;align-items:center;gap:12px">
+          ${imgThumb}
+          <div>
+            <h4>${p.name} <span class="badge ${bc}">${bl}</span></h4>
+            <p>${p.tagline} · ${p.year||''}</p>
+          </div>
+        </div>
+        <div class="lia">
+          <button class="btn bg2 bsm" onclick="toggleEz('pe-${p.id}')">✏ Edit</button>
+          <button class="btn bd bsm" onclick="delProj(${p.id})">🗑</button>
+        </div>
+      </div>
+      <div class="ez" id="pe-${p.id}">
+        <!-- IMAGE UPLOAD -->
+        <div style="margin-bottom:16px">
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--dim);margin-bottom:8px">Project Screenshot / Preview Image</div>
+          <div class="img-upload-zone ${p.image?'has-img':''}" id="piz-${p.id}" onclick="document.getElementById('pif-${p.id}').click()">
+            ${p.image
+              ? `<img class="img-preview" src="${p.image}" alt="${p.name}" id="pip-${p.id}"/><div class="img-edit-row"><button class="btn bg2 bsm" onclick="event.stopPropagation();document.getElementById('pif-${p.id}').click()">📷 Change</button><button class="btn bd bsm" onclick="event.stopPropagation();removeProjImg(${p.id})">✕ Remove</button></div>`
+              : `<div class="img-upload-txt"><span>📸</span><span>Click to upload screenshot</span></div>`}
+          </div>
+          <input type="file" id="pif-${p.id}" accept="image/*" style="display:none" onchange="uploadProjImg(${p.id},this)"/>
+        </div>
+        <div class="fgrid">
+          <div class="fg"><label>Project Name</label><input id="pn-${p.id}" value="${esc(p.name)}"/></div>
+          <div class="fg"><label>Icon (emoji)</label><input id="pi-${p.id}" value="${esc(p.icon)}" style="max-width:100px"/></div>
+        </div>
+        <div class="fgrid">
+          <div class="fg"><label>Tagline</label><input id="ptag-${p.id}" value="${esc(p.tagline)}"/></div>
+          <div class="fg"><label>Status</label><select id="pst-${p.id}">
+            <option value="planned" ${p.status==='planned'?'selected':''}>◯ Planned</option>
+            <option value="progress" ${p.status==='progress'?'selected':''}>⟳ In Progress</option>
+            <option value="done" ${p.status==='done'?'selected':''}>✓ Complete</option>
+          </select></div>
+        </div>
+        <div class="fgrid">
+          <div class="fg"><label>Year</label><input id="pyr-${p.id}" value="${esc(p.year||'')}"/></div>
+          <div class="fg"><label>Live Demo URL</label><input id="plnk-${p.id}" value="${esc(p.link||'')}" placeholder="https://..."/></div>
+        </div>
+        <div class="fgrid full"><div class="fg"><label>GitHub URL</label><input id="pgh-${p.id}" value="${esc(p.github||'')}" placeholder="https://github.com/..."/></div></div>
+        <div class="fgrid full"><div class="fg"><label>Short Description (card)</label><textarea id="pdesc-${p.id}">${esc(p.desc)}</textarea></div></div>
+        <div class="fgrid full"><div class="fg"><label>Full Description (modal)</label><textarea id="pldesc-${p.id}" style="min-height:110px">${esc(p.longDesc||'')}</textarea></div></div>
+        <div class="fgrid full"><div class="fg"><label>Key Features (one per line)</label><textarea id="pfeat-${p.id}" style="min-height:100px">${(p.features||[]).join('\n')}</textarea></div></div>
+        <div class="fgrid full"><div class="fg"><label>Tech Stack (comma separated)</label><input id="ptech-${p.id}" value="${(p.tech||[]).join(', ')}"/></div></div>
+        <div style="display:flex;gap:10px;margin-top:4px">
+          <button class="btn bsu" onclick="saveProj(${p.id})">💾 Save & Publish</button>
+          <button class="btn bg2" onclick="toggleEz('pe-${p.id}')">Cancel</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+async function uploadProjImg(id, inp){
+  if(!inp.files||!inp.files[0]) return;
+  const file = inp.files[0];
+  toast('Uploading screenshot...');
+  const dataURL = await readFileAsDataURL(file);
+  let finalSrc = dataURL;
+  if(GH.isConfigured()){
+    try {
+      const ts = Date.now();
+      const ext = file.name.split('.').pop() || 'jpg';
+      finalSrc = await GH.uploadProjectImage('project_'+id+'_'+ts+'.'+ext, dataURL);
+      toast('Screenshot saved → assets/uploaded/projects/ ✓');
+    } catch(e){ toast('GitHub upload failed, storing locally','e'); finalSrc = dataURL; }
+  }
+  const p = D.projects.find(x=>x.id===id);
+  p.image = finalSrc;
+  // Show storage location in the upload zone
+  const zone = document.getElementById('piz-'+id);
+  if(zone && GH.isConfigured()){
+    const loc = document.createElement('div');
+    loc.style.cssText='font-size:10px;color:var(--sky);padding:4px 10px;text-align:center;background:rgba(56,189,248,.06)';
+    loc.innerHTML='📁 assets/uploaded/projects/';
+    const existing = zone.querySelector('.storage-loc');
+    if(existing) existing.remove();
+    loc.className='storage-loc';
+    zone.appendChild(loc);
+  }
+  await publish(`Screenshot uploaded for "${p.name}"`);
+  renderProjects(); renderOverview();
+  setTimeout(()=>toggleEz('pe-'+id),80);
+}
+function removeProjImg(id){
+  const p=D.projects.find(x=>x.id===id);
+  p.image=null; publish('Image removed'); renderProjects(); renderOverview();
+  setTimeout(()=>toggleEz('pe-'+id),80);
+}
+function addProject(){
+  const id=Date.now();
+  D.projects.push({id,name:'New Project',icon:'🚀',tagline:'Project tagline',status:'planned',image:null,desc:'Description',longDesc:'',features:['Feature 1'],tech:['React'],link:'',github:'',year:new Date().getFullYear().toString()});
+  saveData(D); renderProjects(); renderOverview();
+  setTimeout(()=>{toggleEz('pe-'+id);document.getElementById('pe-'+id)?.scrollIntoView({behavior:'smooth',block:'center'})},80);
+}
+function saveProj(id){
+  const p=D.projects.find(x=>x.id===id);
+  p.name=document.getElementById('pn-'+id).value;
+  p.icon=document.getElementById('pi-'+id).value;
+  p.tagline=document.getElementById('ptag-'+id).value;
+  p.status=document.getElementById('pst-'+id).value;
+  p.year=document.getElementById('pyr-'+id).value;
+  p.link=document.getElementById('plnk-'+id).value;
+  p.github=document.getElementById('pgh-'+id).value;
+  p.desc=document.getElementById('pdesc-'+id).value;
+  p.longDesc=document.getElementById('pldesc-'+id).value;
+  p.features=document.getElementById('pfeat-'+id).value.split('\n').filter(Boolean);
+  p.tech=document.getElementById('ptech-'+id).value.split(',').map(s=>s.trim()).filter(Boolean);
+  publish(`"${p.name}" saved!`); renderProjects(); renderOverview();
+}
+function delProj(id){if(!confirm('Delete this project?'))return;D.projects=D.projects.filter(x=>x.id!==id);publish('Project deleted');renderProjects();renderOverview()}
+
+// ── JOBS ──
+function renderJobs(){
+  const el=document.getElementById('jobs-list');
+  if(!D.jobs.length){el.innerHTML='<div style="text-align:center;padding:40px;color:var(--dim)">No experience added yet.</div>';return;}
+  el.innerHTML=D.jobs.map(j=>`
+    <div class="li" id="jli-${j.id}">
+      <div class="lih">
+        <div class="li-i"><h4>${j.title}</h4><p>${j.company} · ${j.duration}${j.type?' · '+j.type:''}</p></div>
+        <div class="lia">
+          <button class="btn bg2 bsm" onclick="toggleEz('je-${j.id}')">✏ Edit</button>
+          <button class="btn bd bsm" onclick="delJob(${j.id})">🗑</button>
+        </div>
+      </div>
+      <div class="ez" id="je-${j.id}">
+        <div class="fgrid"><div class="fg"><label>Job Title</label><input id="jt-${j.id}" value="${esc(j.title)}"/></div><div class="fg"><label>Company</label><input id="jc-${j.id}" value="${esc(j.company)}"/></div></div>
+        <div class="fgrid"><div class="fg"><label>Duration</label><input id="jd-${j.id}" value="${esc(j.duration)}"/></div><div class="fg"><label>Type</label><select id="jty-${j.id}"><option value="Full-time" ${j.type==='Full-time'?'selected':''}>Full-time</option><option value="Part-time" ${j.type==='Part-time'?'selected':''}>Part-time</option><option value="Freelance" ${j.type==='Freelance'?'selected':''}>Freelance</option><option value="Internship" ${j.type==='Internship'?'selected':''}>Internship</option></select></div></div>
+        <div class="fgrid full"><div class="fg"><label>Description</label><textarea id="jdesc-${j.id}">${esc(j.desc)}</textarea></div></div>
+        <div class="fgrid full"><div class="fg"><label>Highlights (one per line)</label><textarea id="jh-${j.id}" style="min-height:90px">${(j.highlights||[]).join('\n')}</textarea></div></div>
+        <div style="display:flex;gap:10px;margin-top:4px">
+          <button class="btn bsu" onclick="saveJob(${j.id})">💾 Save & Publish</button>
+          <button class="btn bg2" onclick="toggleEz('je-${j.id}')">Cancel</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+function addJob(){
+  const id=Date.now();
+  D.jobs.push({id,title:'New Role',company:'Company',duration:'Duration',type:'Full-time',desc:'Description',highlights:['Highlight']});
+  saveData(D); renderJobs();
+  setTimeout(()=>{toggleEz('je-'+id);document.getElementById('je-'+id)?.scrollIntoView({behavior:'smooth',block:'center'})},80);
+}
+function saveJob(id){
+  const j=D.jobs.find(x=>x.id===id);
+  j.title=document.getElementById('jt-'+id).value;
+  j.company=document.getElementById('jc-'+id).value;
+  j.duration=document.getElementById('jd-'+id).value;
+  j.type=document.getElementById('jty-'+id).value;
+  j.desc=document.getElementById('jdesc-'+id).value;
+  j.highlights=document.getElementById('jh-'+id).value.split('\n').filter(Boolean);
+  publish(`"${j.title}" saved!`); renderJobs();
+}
+function delJob(id){if(!confirm('Delete?'))return;D.jobs=D.jobs.filter(x=>x.id!==id);publish('Deleted');renderJobs()}
+
+// ── CERTS ──
+function renderCerts(){
+  const el=document.getElementById('certs-list');
+  if(!D.certs.length){el.innerHTML='<div style="text-align:center;padding:40px;color:var(--dim)">No certificates yet.</div>';return;}
+  el.innerHTML=D.certs.map(c=>`
+    <div class="li" id="cli-${c.id}">
+      <div class="lih">
+        <div class="li-i" style="display:flex;align-items:center;gap:12px">
+          ${c.image?`<img src="${c.image}" style="width:48px;height:36px;border-radius:6px;object-fit:cover;border:1px solid var(--bdr)"/>`:`<span style="font-size:22px">🏅</span>`}
+          <div><h4>${c.name} <span class="badge b-gold">${c.year}</span></h4><p>${c.issuer}</p></div>
+        </div>
+        <div class="lia">
+          <button class="btn bg2 bsm" onclick="toggleEz('ce-${c.id}')">✏ Edit</button>
+          <button class="btn bd bsm" onclick="delCert(${c.id})">🗑</button>
+        </div>
+      </div>
+      <div class="ez" id="ce-${c.id}">
+        <!-- CERT IMAGE UPLOAD -->
+        <div style="margin-bottom:16px">
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--dim);margin-bottom:8px">Certificate Image (visitors can click to view full size)</div>
+          <div class="img-upload-zone ${c.image?'has-img':''}" style="max-width:360px" id="ciz-${c.id}" onclick="document.getElementById('cif-${c.id}').click()">
+            ${c.image
+              ? `<img class="img-preview" src="${c.image}" alt="${c.name}"/><div class="img-edit-row"><button class="btn bg2 bsm" onclick="event.stopPropagation();document.getElementById('cif-${c.id}').click()">📷 Change</button><button class="btn bd bsm" onclick="event.stopPropagation();removeCertImg(${c.id})">✕ Remove</button></div>`
+              : `<div class="img-upload-txt"><span>🏅</span><span>Upload certificate photo/scan</span></div>`}
+          </div>
+          <input type="file" id="cif-${c.id}" accept="image/*" style="display:none" onchange="uploadCertImg(${c.id},this)"/>
+        </div>
+        <div class="fgrid"><div class="fg"><label>Certificate Name</label><input id="cnam-${c.id}" value="${esc(c.name)}"/></div><div class="fg"><label>Issuing Organization</label><input id="ciss-${c.id}" value="${esc(c.issuer)}"/></div></div>
+        <div class="fgrid"><div class="fg"><label>Year</label><input id="cyr-${c.id}" value="${esc(c.year)}"/></div><div class="fg"><label>Verification URL</label><input id="clnk-${c.id}" value="${esc(c.link||'')}" placeholder="https://..."/></div></div>
+        <div style="display:flex;gap:10px;margin-top:4px">
+          <button class="btn bsu" onclick="saveCert(${c.id})">💾 Save & Publish</button>
+          <button class="btn bg2" onclick="toggleEz('ce-${c.id}')">Cancel</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+async function uploadCertImg(id,inp){
+  if(!inp.files||!inp.files[0]) return;
+  const file = inp.files[0];
+  toast('Uploading certificate image...');
+  const dataURL = await readFileAsDataURL(file);
+  let finalSrc = dataURL;
+  if(GH.isConfigured()){
+    try {
+      const ts = Date.now();
+      const ext = file.name.split('.').pop() || 'jpg';
+      finalSrc = await GH.uploadCertImage('cert_'+id+'_'+ts+'.'+ext, dataURL);
+      toast('Certificate saved → assets/uploaded/certificates/ ✓');
+    } catch(e){ toast('GitHub upload failed, storing locally','e'); finalSrc = dataURL; }
+  }
+  const c=D.certs.find(x=>x.id===id);
+  c.image=finalSrc;
+  // Show storage location label
+  const czone = document.getElementById('ciz-'+id);
+  if(czone && GH.isConfigured()){
+    const loc = document.createElement('div');
+    loc.style.cssText='font-size:10px;color:var(--sky);padding:4px 10px;text-align:center;background:rgba(56,189,248,.06);border-top:1px solid var(--bdr)';
+    loc.innerHTML='📁 assets/uploaded/certificates/';
+    const existing = czone.querySelector('.storage-loc');
+    if(existing) existing.remove();
+    loc.className='storage-loc';
+    czone.appendChild(loc);
+  }
+  await publish(`Certificate image uploaded for "${c.name}"`);
+  renderCerts();
+  setTimeout(()=>toggleEz('ce-'+id),80);
+}
+function removeCertImg(id){
+  const c=D.certs.find(x=>x.id===id);
+  c.image=null; publish('Image removed'); renderCerts();
+  setTimeout(()=>toggleEz('ce-'+id),80);
+}
+function addCert(){
+  const id=Date.now();
+  D.certs.push({id,name:'New Certificate',issuer:'Issuing Organization',year:new Date().getFullYear().toString(),link:'',image:null});
+  saveData(D); renderCerts();
+  setTimeout(()=>{toggleEz('ce-'+id);document.getElementById('ce-'+id)?.scrollIntoView({behavior:'smooth',block:'center'})},80);
+}
+function saveCert(id){
+  const c=D.certs.find(x=>x.id===id);
+  c.name=document.getElementById('cnam-'+id).value;
+  c.issuer=document.getElementById('ciss-'+id).value;
+  c.year=document.getElementById('cyr-'+id).value;
+  c.link=document.getElementById('clnk-'+id).value;
+  publish(`"${c.name}" saved!`); renderCerts();
+}
+function delCert(id){if(!confirm('Delete?'))return;D.certs=D.certs.filter(x=>x.id!==id);publish('Deleted');renderCerts()}
+
+// ── GITHUB SYNC UI ──
+function refreshGHStatus(){
+  const cfg = GH.cfg();
+  const setup = document.getElementById('gh-setup-card');
+  const connected = document.getElementById('gh-connected-card');
+  if(!setup || !connected) return;
+  if(GH.isConfigured() && cfg){
+    setup.style.display='none';
+    connected.style.display='block';
+    document.getElementById('gh-connected-info').innerHTML =
+      `Syncing to <strong style="color:var(--txt)">${cfg.owner}/${cfg.repo}</strong> on branch <strong style="color:var(--txt)">${cfg.branch}</strong>.<br/>
+       Images go to <code style="background:var(--bg3);padding:1px 6px;border-radius:4px">assets/uploaded/</code> in your repo.`;
+  } else {
+    setup.style.display='block';
+    connected.style.display='none';
+  }
+}
+function showGHSetup(){
+  const cfg = GH.cfg();
+  if(cfg){
+    document.getElementById('gh-owner').value = cfg.owner||''
+    document.getElementById('gh-repo').value = cfg.repo||''
+    document.getElementById('gh-branch').value = cfg.branch||'main'
+    document.getElementById('gh-token').value = cfg.token||''
+  }
+  document.getElementById('gh-setup-card').style.display='block';
+  document.getElementById('gh-connected-card').style.display='none';
+}
+async function saveGHConfig(){
+  const owner = document.getElementById('gh-owner').value.trim();
+  const repo = document.getElementById('gh-repo').value.trim();
+  const branch = document.getElementById('gh-branch').value.trim()||'main';
+  const token = document.getElementById('gh-token').value.trim();
+  if(!owner||!repo||!token){toast('Fill all GitHub fields','e');return;}
+  GH.saveCfg({owner,repo,branch,token});
+  try {
+    toast('Testing connection...');
+    await GH.test();
+    refreshGHStatus();
+    toast('✅ GitHub connected! All saves will now sync to your repo.');
+  } catch(e){
+    toast('Connection failed: '+e.message,'e');
+  }
+}
+async function testGHConfig(){
+  const owner = document.getElementById('gh-owner').value.trim();
+  const repo = document.getElementById('gh-repo').value.trim();
+  const branch = document.getElementById('gh-branch').value.trim()||'main';
+  const token = document.getElementById('gh-token').value.trim();
+  if(!owner||!repo||!token){toast('Fill all fields first','e');return;}
+  GH.saveCfg({owner,repo,branch,token});
+  const r = document.getElementById('gh-test-result');
+  r.style.display='block'; r.style.background='rgba(245,158,11,.1)'; r.style.color='#fbbf24';
+  r.textContent='Testing...';
+  try {
+    const data = await GH.test();
+    r.style.background='rgba(16,185,129,.1)'; r.style.color='#34d399';
+    r.textContent='✅ Connected! Repo: '+data.full_name+' ('+data.visibility+')';
+  } catch(e){
+    r.style.background='rgba(244,63,94,.1)'; r.style.color='#fb7185';
+    r.textContent='❌ '+e.message;
+  }
+}
+function disconnectGH(){
+  if(!confirm('Disconnect GitHub? Images already on GitHub will still work.')) return;
+  localStorage.removeItem('gh_sync_cfg');
+  refreshGHStatus();
+  toast('GitHub disconnected');
+}
+async function forcePushAll(){
+  const r = document.getElementById('push-result');
+  r.style.display='block'; r.style.background='rgba(245,158,11,.1)'; r.style.color='#fbbf24';
+  r.textContent='Pushing to GitHub...';
+  try {
+    await GH.saveData(D);
+    r.style.background='rgba(16,185,129,.1)'; r.style.color='#34d399';
+    r.textContent='✅ All data pushed to GitHub successfully!';
+    toast('All data pushed to GitHub!');
+    setTimeout(()=>r.style.display='none',5000);
+  } catch(e){
+    r.style.background='rgba(244,63,94,.1)'; r.style.color='#fb7185';
+    r.textContent='❌ Push failed: '+e.message;
+    toast('Push failed: '+e.message,'e');
+  }
+}
+
+// ── STORAGE INFO UI ──
+function showCertStorageInfo(){
+  const el = document.getElementById('cert-storage-info');
+  const path = document.getElementById('cert-storage-path');
+  if(!el) return;
+  if(GH.isConfigured()){
+    const c = GH.cfg();
+    el.style.display='block';
+    path.textContent = `github.com/${c.owner}/${c.repo}/assets/uploaded/certificates/`;
+  } else {
+    el.style.display='block';
+    el.style.borderColor='rgba(245,158,11,.2)';
+    el.style.background='rgba(245,158,11,.04)';
+    path.style.color='#fbbf24';
+    path.textContent = '⚠ GitHub not connected — images stored in browser only';
+  }
+}
+function showProjStorageInfo(){
+  // proj panel doesn't have a banner but storage shows inline per item
+}
+
+// ── HELPERS ──
+function toggleEz(id){ document.getElementById(id).classList.toggle('open') }
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;') }
+function confirmReset(){ if(!confirm('⚠️ Reset ALL data to defaults?'))return; D=resetData(); loadOwner(); renderProjects(); renderJobs(); renderCerts(); renderOverview(); updateSbAvatar(); toast('Data reset to defaults'); nav('overview'); }
+</script>
+</body>
+</html>
